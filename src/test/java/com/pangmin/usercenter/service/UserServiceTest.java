@@ -44,34 +44,39 @@ class UserServiceTest {
         String userAccount = "pangmin";
         String userPassword = "";
         String checkPassword = "123456";
-        long result = userService.userRegister(userAccount, userPassword, checkPassword);
+        String netId = "1";
+        long result = userService.userRegister(userAccount, userPassword, checkPassword, netId);
         Assertions.assertEquals(-1, result);
 
         userAccount = "pa";
-        result = userService.userRegister(userAccount, userPassword, checkPassword);
+        result = userService.userRegister(userAccount, userPassword, checkPassword, netId);
         Assertions.assertEquals(-1, result);
 
         userAccount = "pangmin";
         userPassword = "123456";
-        result = userService.userRegister(userAccount, userPassword, checkPassword);
+        result = userService.userRegister(userAccount, userPassword, checkPassword, netId);
         Assertions.assertEquals(-1, result);
 
         userAccount = "pa ng";
         userPassword = "12345678";
-        result = userService.userRegister(userAccount, userPassword, checkPassword);
+        result = userService.userRegister(userAccount, userPassword, checkPassword, netId);
         Assertions.assertEquals(-1, result);
 
         checkPassword = "123456789";
-        result = userService.userRegister(userAccount, userPassword, checkPassword);
+        result = userService.userRegister(userAccount, userPassword, checkPassword, netId);
         Assertions.assertEquals(-1, result);
 
         userAccount = "testPangmin";
         checkPassword = "12345678";
-        result = userService.userRegister(userAccount, userPassword, checkPassword);
+        result = userService.userRegister(userAccount, userPassword, checkPassword, netId);
         Assertions.assertEquals(-1, result);
 
         userAccount = "pangmin";
-        result = userService.userRegister(userAccount, userPassword, checkPassword);
+        result = userService.userRegister(userAccount, userPassword, checkPassword, netId);
+        Assertions.assertEquals(-1, result);
+
+        userAccount = "superadmin";
+        result = userService.userRegister(userAccount, userPassword, checkPassword, netId);
         Assertions.assertEquals(-1, result);
     }
 }

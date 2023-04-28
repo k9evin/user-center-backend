@@ -2,6 +2,8 @@ package com.pangmin.usercenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.pangmin.usercenter.common.ErrorCode;
+import com.pangmin.usercenter.exception.BusinessException;
 import com.pangmin.usercenter.model.domain.User;
 import com.pangmin.usercenter.service.UserService;
 import com.pangmin.usercenter.mapper.UserMapper;
@@ -36,30 +38,37 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
 
     @Override
-    public long userRegister(String userAccount, String userPassword, String checkPassword) {
-        if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
-            return -1;
+    public long userRegister(String userAccount, String userPassword, String checkPassword, String netId) {
+        if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword, netId)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
         }
         if (userAccount.length() < 4) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "账户长度小于4位");
         }
         if (userPassword.length() < 8 || checkPassword.length() < 8) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码长度小于8位");
         }
         // 账户不能包含特殊字符
         String validPattern = "[`~!@#$%^&*()+=|{}':;',\\\\[\\\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
         Matcher matcher = Pattern.compile(validPattern).matcher(userAccount);
         if (matcher.find()) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         // 校验密码是否相同
         if (!userPassword.equals(checkPassword)) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         // 检查账户重复
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("userAccount", userAccount);
         long count = userMapper.selectCount(queryWrapper);
+        if (count > 0) {
+            return -1;
+        }
+        // 检查netId重复
+        queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("netId", netId);
+        count = userMapper.selectCount(queryWrapper);
         if (count > 0) {
             return -1;
         }
@@ -69,6 +78,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = new User();
         user.setUserAccount(userAccount);
         user.setUserPassword(encryptedPassword);
+        user.setNetId(netId);
         boolean saveResult = this.save(user);
         if (!saveResult) {
             return -1;
@@ -133,7 +143,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         safetyUser.setUserStatus(user.getUserStatus());
         safetyUser.setCreateTime(user.getCreateTime());
         safetyUser.setUserRole(user.getUserRole());
+        safetyUser.setNetId(user.getNetId());
         return safetyUser;
+    }
+
+    /**
+     * 用户登出
+     *
+     * @param request 请求
+     * @return 1 成功 0 失败
+     */
+    @Override
+    public int userLogout(HttpServletRequest request) {
+        // 移除用户登陆态
+        request.getSession().removeAttribute(USER_LOGIN_STATE);
+        return 1;
     }
 }
 
