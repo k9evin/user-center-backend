@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +37,7 @@ public class UserController {
         String checkPassword = userRegisterRequest.getCheckPassword();
         String netId = userRegisterRequest.getNetId();
         if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword, netId)) {
-            return null;
+            throw new BusinessException(ErrorCode.NULL_ERROR);
         }
         long result = userService.userRegister(userAccount, userPassword, checkPassword, netId);
         return ResultUtils.success(result);
@@ -47,12 +46,12 @@ public class UserController {
     @PostMapping("/login")
     public BaseResponse<User> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
         if (userLoginRequest == null) {
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         String userAccount = userLoginRequest.getUserAccount();
         String userPassword = userLoginRequest.getUserPassword();
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
-            return null;
+            throw new BusinessException(ErrorCode.NULL_ERROR);
         }
         User user = userService.userLogin(userAccount, userPassword, request);
         return ResultUtils.success(user);
@@ -62,7 +61,7 @@ public class UserController {
     @PostMapping("/logout")
     public BaseResponse<Integer> userLogout(HttpServletRequest request) {
         if (request == null) {
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         int i = userService.userLogout(request);
         return ResultUtils.success(i);
@@ -74,7 +73,7 @@ public class UserController {
         Object userObject = request.getSession().getAttribute(USER_LOGIN_STATE);
         User currentUser = (User) userObject;
         if (currentUser == null) {
-            return null;
+            throw new BusinessException(ErrorCode.NOT_LOGIN);
         }
         long userId = currentUser.getId();
         // TODO 校验用户是否合法
@@ -100,10 +99,10 @@ public class UserController {
     @GetMapping("/delete")
     public BaseResponse<Boolean> deleteUser(@RequestBody long id, HttpServletRequest request) {
         if (!isAdmin(request)) {
-            return null;
+            throw new BusinessException(ErrorCode.NO_PERMISSION);
         }
         if (id <= 0) {
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         boolean b = userService.removeById(id);
         return ResultUtils.success(b);
