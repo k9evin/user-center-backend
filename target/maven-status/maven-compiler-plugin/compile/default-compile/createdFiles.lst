@@ -1,0 +1,14 @@
+com/pangmin/usercenter/model/domain/request/UserRegisterRequest.class
+com/pangmin/usercenter/service/impl/UserServiceImpl.class
+com/pangmin/usercenter/exception/GlobalExceptionHandler.class
+com/pangmin/usercenter/common/BaseResponse.class
+com/pangmin/usercenter/model/domain/request/UserLoginRequest.class
+com/pangmin/usercenter/model/domain/User.class
+com/pangmin/usercenter/controller/UserController.class
+com/pangmin/usercenter/constant/UserConstant.class
+com/pangmin/usercenter/exception/BusinessException.class
+com/pangmin/usercenter/UserCenterBackendApplication.class
+com/pangmin/usercenter/common/ResultUtils.class
+com/pangmin/usercenter/service/UserService.class
+com/pangmin/usercenter/mapper/UserMapper.class
+com/pangmin/usercenter/common/ErrorCode.class
