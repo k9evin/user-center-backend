@@ -118,10 +118,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             log.info("User login failed: userPassword cannot match with userAccount");
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "账户或密码错误");
         }
-        User safetyUser = getSafetyUser(user);
+        User safeUser = getSafetyUser(user);
         // 记录用户登陆态
-        request.getSession().setAttribute(USER_LOGIN_STATE, safetyUser);
-        return safetyUser;
+        request.getSession().setAttribute(USER_LOGIN_STATE, safeUser);
+        return safeUser;
     }
 
     /**
@@ -135,19 +135,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (user == null) {
             return null;
         }
-        User safetyUser = new User();
-        safetyUser.setId(user.getId());
-        safetyUser.setUsername(user.getUsername());
-        safetyUser.setUserAccount(user.getUserAccount());
-        safetyUser.setAvatarUrl(user.getAvatarUrl());
-        safetyUser.setGender(user.getGender());
-        safetyUser.setPhone(user.getPhone());
-        safetyUser.setEmail(user.getEmail());
-        safetyUser.setUserStatus(user.getUserStatus());
-        safetyUser.setCreateTime(user.getCreateTime());
-        safetyUser.setUserRole(user.getUserRole());
-        safetyUser.setNetId(user.getNetId());
-        return safetyUser;
+        User safeUser = new User();
+        safeUser.setId(user.getId());
+        safeUser.setUsername(user.getUsername());
+        safeUser.setUserAccount(user.getUserAccount());
+        safeUser.setAvatarUrl(user.getAvatarUrl());
+        safeUser.setGender(user.getGender());
+        safeUser.setPhone(user.getPhone());
+        safeUser.setEmail(user.getEmail());
+        safeUser.setUserStatus(user.getUserStatus());
+        safeUser.setCreateTime(user.getCreateTime());
+        safeUser.setUserRole(user.getUserRole());
+        safeUser.setNetId(user.getNetId());
+        return safeUser;
     }
 
     /**

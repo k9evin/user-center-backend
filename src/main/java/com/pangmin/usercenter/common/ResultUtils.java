@@ -35,7 +35,7 @@ public class ResultUtils {
      * @return BaseResponse 返回结果
      */
     public static <T> BaseResponse<T> error(int errorCode, String message, String description) {
-        return new BaseResponse(errorCode, null, message, description);
+        return new BaseResponse<>(errorCode, null, message, description);
     }
 
 
@@ -47,7 +47,7 @@ public class ResultUtils {
      * @return BaseResponse 返回结果
      */
     public static <T> BaseResponse<T> error(ErrorCode errorCode, String message, String description) {
-        return new BaseResponse(errorCode.getCode(), null, message, description);
+        return new BaseResponse<>(errorCode.getCode(), null, message, description);
     }
 
     /**
@@ -58,6 +58,6 @@ public class ResultUtils {
      * @return BaseResponse 返回结果
      */
     public static <T> BaseResponse<T> error(ErrorCode errorCode, String description) {
-        return new BaseResponse(errorCode.getCode(), null, errorCode.getMessage(), description);
+        return new BaseResponse<>(errorCode.getCode(), null, errorCode.getMessage(), description);
     }
 }

@@ -9,6 +9,7 @@ import java.io.Serializable;
  */
 @Data
 public class UserLoginRequest implements Serializable {
+
     private static final long serialVersionUID = 18611813994751215L;
 
     private String userAccount;

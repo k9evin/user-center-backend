@@ -20,6 +20,11 @@ import java.util.stream.Collectors;
 import static com.pangmin.usercenter.constant.UserConstant.ADMIN_ROLE;
 import static com.pangmin.usercenter.constant.UserConstant.USER_LOGIN_STATE;
 
+/**
+ * The type User controller.
+ *
+ * @author Mingkai Pang
+ */
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -78,13 +83,13 @@ public class UserController {
         long userId = currentUser.getId();
         // TODO 校验用户是否合法
         User user = userService.getById(userId);
-        User safetyUser = userService.getSafetyUser(user);
-        return ResultUtils.success(safetyUser);
+        User safeUser = userService.getSafetyUser(user);
+        return ResultUtils.success(safeUser);
     }
 
     @GetMapping("/search")
     public BaseResponse<List<User>> searchUsers(String username, HttpServletRequest request) {
-        if (!isAdmin(request)) {
+        if (isAdmin(request)) {
             throw new BusinessException(ErrorCode.NO_PERMISSION);
         }
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
@@ -98,27 +103,27 @@ public class UserController {
 
     @GetMapping("/delete")
     public BaseResponse<Boolean> deleteUser(@RequestBody long id, HttpServletRequest request) {
-        if (!isAdmin(request)) {
+        if (isAdmin(request)) {
             throw new BusinessException(ErrorCode.NO_PERMISSION);
         }
         if (id <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        boolean b = userService.removeById(id);
-        return ResultUtils.success(b);
+        boolean flag = userService.removeById(id);
+        return ResultUtils.success(flag);
     }
 
 
     /**
      * 鉴权 - 是否为管理员
      *
-     * @param request
-     * @return
+     * @param request 请求
+     * @return 是否为管理员
      */
     private boolean isAdmin(HttpServletRequest request) {
         Object userObject = request.getSession().getAttribute(USER_LOGIN_STATE);
         User user = (User) userObject;
-        return user != null && user.getUserRole() == ADMIN_ROLE;
+        return user == null || user.getUserRole() != ADMIN_ROLE;
     }
 
 }
